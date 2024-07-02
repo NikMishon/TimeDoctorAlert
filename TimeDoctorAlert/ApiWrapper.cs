@@ -15,6 +15,8 @@ public class ApiWrapper
         public RECT Rect { get; set; }
         public string ClassName { get; set; }
         public bool IsForeground { get; set; }
+
+        public override string ToString() => $"{Title} {ProcessName} {Rect.Left} {Rect.Top} {Rect.Right} {Rect.Bottom} {ClassName} {IsForeground}";
     }
 
     [StructLayout(LayoutKind.Sequential)]

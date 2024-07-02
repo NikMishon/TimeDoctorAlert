@@ -1,11 +1,9 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using NAudio.Wave;
 using Serilog;
 using static TimeDoctorAlert.ApiWrapper;
-using Application = System.Windows.Application;
 using Window = System.Windows.Window;
 
 
@@ -20,7 +18,8 @@ namespace TimeDoctorAlert
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        private readonly Func<WindowInfo, bool> _filter = w => w.ProcessName == "Time Doctor" &&
+        private readonly Func<WindowInfo, bool> _filter = w => (w.ProcessName == "Time Doctor" ||
+                                                                w.ProcessName == "timedoctor2") &&
                                                                 w.Rect.Right - w.Rect.Left > 550 &&
                                                                 w.Rect.Bottom - w.Rect.Top > 100;
 
