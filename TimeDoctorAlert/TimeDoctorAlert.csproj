@@ -1,46 +1,54 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net48</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UseWPF>true</UseWPF>
-		<PackageIcon>logo.png</PackageIcon>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Include="..\..\..\..\Downloads\logo.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+	<!-- Platform-specific conditional compilation symbols -->
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+		<DefineConstants>$(DefineConstants);MACOS</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+		<DefineConstants>$(DefineConstants);LINUX</DefineConstants>
+	</PropertyGroup>
+
+	<!-- Windows-only packages -->
+	<ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<PackageReference Include="NAudio" Version="2.2.1" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.0" />
 	</ItemGroup>
 
+	<!-- Cross-platform packages -->
 	<ItemGroup>
-	  <PackageReference Include="NAudio" Version="2.2.1" />
-	  <PackageReference Include="Serilog" Version="3.1.1" />
-	  <PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
+		<PackageReference Include="Serilog" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Windows.Forms" />
+	<!-- Conditionally include platform-specific source files -->
+	<ItemGroup Condition="!$([MSBuild]::IsOSPlatform('Windows'))">
+		<Compile Remove="Platform\Windows\**" />
+	</ItemGroup>
+	<ItemGroup Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
+		<Compile Remove="Platform\Mac\**" />
+	</ItemGroup>
+	<ItemGroup Condition="!$([MSBuild]::IsOSPlatform('Linux'))">
+		<Compile Remove="Platform\Linux\**" />
 	</ItemGroup>
 
+	<!-- Embedded resources -->
 	<ItemGroup>
-	  <Compile Update="Properties\Resources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Resources.resx</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Update="Properties\Resources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Include="Resources\imperskij-marsh-8bit.mp3" LogicalName="TimeDoctorAlert.Resources.imperskij-marsh-8bit.mp3" />
+		<EmbeddedResource Include="Resources\logo.ico" LogicalName="TimeDoctorAlert.Resources.logo.ico" />
 	</ItemGroup>
 
 </Project>

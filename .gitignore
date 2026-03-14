@@ -396,3 +396,11 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Bmad - AI code generation tool
+_bmad/
+
+# AI agents and tools
+.agents/
+.claude/
+.cursor/
